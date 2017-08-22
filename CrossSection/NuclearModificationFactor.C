@@ -11,19 +11,18 @@ bool drawDRAA = false;
 bool drawChHad = false;
 bool drawThm = false;
 
-void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root", TString inputPbPb="ROOTfiles/CrossSectionPbPb.root",TString label="PbPb",TString outputfile="RAAfile.root", Float_t centMin=0., Float_t centMax=100.)
-{
-//  drawDRAA = true;
-//  drawChHad = true;
-//  drawThm = true;
+void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
+    TString inputPbPb="ROOTfiles/CrossSectionPbPb.root",TString label="PbPb",
+    TString outputfile="RAAfile.root", Float_t centMin=0.,
+    Float_t centMax=100.) {
 
   float pti = ptBins[0]-2.;
   float pte = ptBins[nBins]+5.;
-  if(drawDRAA){
+  if(drawDRAA) {
     pti = 1;
     pte = 400.;
   }
-  if(drawThm){
+  if(drawThm) {
     pti = 5;
     pte = 110.;
   }
@@ -47,8 +46,10 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root", 
   hNuclearModification->Divide(hSigmaPPStat);
 
   double apt[nBins];
+  
   //bin half width
   double aptl[nBins];
+  
   //number of every rebined bin
   double bin_num[nBins];
 
@@ -59,16 +60,16 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root", 
   }
 
   Double_t xr[nBins], yr[nBins], xrlow[nBins], yrlow[nBins],xrhigh[nBins],yrhigh[nBins];
-  for(int i=0;i<nBins;i++)
-  {
+  for(int i=0;i<nBins;i++) {
     yr[i] = hNuclearModification->GetBinContent(i+1);
-    double systematic=0.01*systematicsForRAA(hNuclearModification->GetBinCenter(i+1),centMin,centMax,0.,0.);
-	//double systematic=0.;
+    double systematic=0.01*systematicsForRAA(
+        hNuclearModification->GetBinCenter(i+1),centMin,centMax,0.,0.);
     yrlow[i] = hNuclearModification->GetBinContent(i+1)*systematic;
     yrhigh[i] =hNuclearModification->GetBinContent(i+1)*systematic;
   }
 
-  TGraphAsymmErrors* gNuclearModification = new TGraphAsymmErrors(nBins,apt,yr,aptl,aptl,yrlow,yrhigh);
+  TGraphAsymmErrors* gNuclearModification =
+    new TGraphAsymmErrors(nBins,apt,yr,aptl,aptl,yrlow,yrhigh);
   gNuclearModification->SetName("gNuclearModification");
 
   TCanvas*canvasRAA=new TCanvas("canvasRAA","canvasRAA",600,600);
@@ -99,29 +100,24 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root", 
   line->SetLineWidth(2);
   line->Draw();
 
-  //gNuclearModification->SetFillColor(kOrange);//1
-  //gNuclearModification->SetFillColor(kPink+7);//1
   gNuclearModification->SetFillColor(kAzure+7);//1
   gNuclearModification->SetFillStyle(3001);//0
   gNuclearModification->SetLineWidth(1);//3
   gNuclearModification->SetMarkerSize(1);
   gNuclearModification->SetMarkerStyle(21);
-  //gNuclearModification->SetLineColor(kOrange);//kGreen+4
-  //gNuclearModification->SetMarkerColor(kRed);//kGreen+4
   gNuclearModification->SetLineColor(kAzure+7);//kGreen+4
   gNuclearModification->SetMarkerColor(kViolet+3);//kGreen+4
 
   hNuclearModification->SetLineWidth(3);
-  //hNuclearModification->SetLineColor(kRed);
-  //hNuclearModification->SetMarkerColor(kRed);
-  //hNuclearModification->SetLineColor(kTeal+7);
-    hNuclearModification->SetLineColor(kViolet+3);
+  hNuclearModification->SetLineColor(kViolet+3);
   hNuclearModification->SetMarkerColor(kViolet+3);
   hNuclearModification->SetMarkerStyle(21);
 
   Float_t systnorm = normalizationUncertaintyForRAA()*1.e-2;
   TBox* bSystnorm = new TBox(pti,1-systnorm,pti+0.35,1+systnorm);
-cout<<systnorm<<endl;
+
+  cout<<systnorm<<endl;
+  
   if(drawDRAA) bSystnorm = new TBox(pti,1-systnorm,pti+0.2,1+systnorm);
   bSystnorm->SetLineColor(16);
   bSystnorm->SetFillColor(16);
@@ -139,11 +135,10 @@ cout<<systnorm<<endl;
   texY->SetTextFont(42);
   texY->SetTextSize(0.045);
   texY->SetLineWidth(2);
-  //texY->Draw();
 
-  TLatex* texlumi = new TLatex(0.13,0.936,"27.4 pb^{-1} (5.02 TeV pp) + 350.68 #mub^{-1} (5.02 TeV PbPb)");
+  TLatex* texlumi = new TLatex(0.13,0.936,
+      "27.4 pb^{-1} (5.02 TeV pp) + 350.68 #mub^{-1} (5.02 TeV PbPb)");
   texlumi->SetNDC();
-  //texlumi->SetTextAlign(31);
   texlumi->SetTextFont(42);
   texlumi->SetTextSize(0.038);
   texlumi->SetLineWidth(2);
@@ -163,9 +158,9 @@ cout<<systnorm<<endl;
   texpre->SetLineWidth(2);
   texpre->Draw();
 
-  //TLegend *legendSigma=new TLegend(0.40,0.5168644,0.8084677,0.6605932,"");
   TLegend *legendSigma=new TLegend(0.6036242,0.7474695,0.942953,0.8457592,"");
-  if(drawDRAA)legendSigma=new TLegend(0.4236242,0.6774695,0.812953,0.8757592,"");
+  if(drawDRAA)legendSigma=
+    new TLegend(0.4236242,0.6774695,0.812953,0.8757592,"");
   if(drawThm)legendSigma=new TLegend(0.5636242,0.6774695,0.922953,0.8757592,"");
   legendSigma->SetBorderSize(0);
   legendSigma->SetLineColor(0);
@@ -174,19 +169,8 @@ cout<<systnorm<<endl;
   legendSigma->SetTextFont(42);
   legendSigma->SetTextSize(0.04);
 
-//  TLegendEntry *ent_SigmaPP=legendSigma->AddEntry(hNuclearModification,"R_{AA} stat. unc.","pf");
-//  ent_SigmaPP->SetTextFont(42);
-//  ent_SigmaPP->SetLineColor(1);
-//  ent_SigmaPP->SetMarkerColor(1);
-//  ent_SigmaPP->SetTextSize(0.045);
-//
-//  TLegendEntry *ent_Sigmapp=legendSigma->AddEntry(gNuclearModification,"R_{AA} syst.","f");
-//  ent_Sigmapp->SetTextFont(42);
-//  ent_Sigmapp->SetLineColor(5);
-//  ent_Sigmapp->SetMarkerColor(1);
-//  ent_Sigmapp->SetTextSize(0.045);
-
-  TLegendEntry *ent_B = legendSigma->AddEntry(gNuclearModification,"B^{+} |y| < 2.4","pf");
+  TLegendEntry *ent_B =
+    legendSigma->AddEntry(gNuclearModification,"B^{+} |y| < 2.4","pf");
   ent_B->SetTextFont(42);
   ent_B->SetLineColor(4);
   ent_B->SetMarkerColor(4);
@@ -217,10 +201,9 @@ cout<<systnorm<<endl;
     TGraphAsymmErrors* gDNuclearModification = new TGraphAsymmErrors();
     Draw_DRAA(canvasRAA, gDNuclearModification);
     gDNuclearModification->SetFillColor(kYellow-9);
-    //gDNuclearModification->SetFillColor(5);
-    TLegendEntry *ent_Dhighpt = legendSigma->AddEntry(gDNuclearModification,"D^{0} |y| < 1.0","pf");
+    TLegendEntry *ent_Dhighpt =
+      legendSigma->AddEntry(gDNuclearModification,"D^{0} |y| < 1.0","pf");
     ent_Dhighpt->SetTextFont(42);
-//    ent_Dhighpt->SetLineColor(4);
     ent_Dhighpt->SetMarkerColor(4);
     ent_Dhighpt->SetTextSize(0.038);//0.03
   }
@@ -229,7 +212,8 @@ cout<<systnorm<<endl;
     TGraphAsymmErrors* gChHadDummy = new TGraphAsymmErrors();
     gChHadDummy->SetFillColor(TColor::GetColor("#ffcc00"));
     gChHadDummy->SetMarkerColor(kRed);
-    TLegendEntry *ent_ChHad = legendSigma->AddEntry(gChHadDummy,"charged hadrons |y| < 1.0","pf");
+    TLegendEntry *ent_ChHad =
+      legendSigma->AddEntry(gChHadDummy,"charged hadrons |y| < 1.0","pf");
     ent_ChHad->SetTextFont(42);
     ent_ChHad->SetLineColor(4);
     ent_ChHad->SetMarkerColor(4);
@@ -241,15 +225,17 @@ cout<<systnorm<<endl;
     TGraphAsymmErrors* gThmDummy2 = new TGraphAsymmErrors();
     TGraphAsymmErrors* gThmDummy3 = new TGraphAsymmErrors();
     gThmDummy1->SetLineColor(kGreen+4);
-    //gThmDummy2->SetLineColor(kViolet-6);
     gThmDummy2->SetLineColor(kOrange+8);
     gThmDummy3->SetLineColor(4);
     gThmDummy1->SetLineWidth(4.5);
     gThmDummy2->SetLineWidth(4.5);
     gThmDummy3->SetLineWidth(4.5);
-    TLegendEntry *ent_thm1 = legendSigma->AddEntry(gThmDummy1,"M. Djordjevic et al.","l");
-    TLegendEntry *ent_thm2 = legendSigma->AddEntry(gThmDummy2,"M. He et al.","l");
-    TLegendEntry *ent_thm3 = legendSigma->AddEntry(gThmDummy3,"CUJET3.0 0-20%","l");
+    TLegendEntry *ent_thm1 =
+      legendSigma->AddEntry(gThmDummy1,"M. Djordjevic et al.","l");
+    TLegendEntry *ent_thm2 =
+      legendSigma->AddEntry(gThmDummy2,"M. He et al.","l");
+    TLegendEntry *ent_thm3 =
+      legendSigma->AddEntry(gThmDummy3,"CUJET3.0 0-20%","l");
     ent_thm1->SetTextSize(0.038);//0.03
     ent_thm2->SetTextSize(0.038);//0.03
     ent_thm3->SetTextSize(0.038);//0.03
@@ -274,10 +260,12 @@ cout<<systnorm<<endl;
     AddOn = AddOn += "_ThmRAA";
   }
 
-
-  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.pdf",label.Data(),centMin,centMax,AddOn.Data()));
-  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.png",label.Data(),centMin,centMax,AddOn.Data()));
-  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.C",label.Data(),centMin,centMax,AddOn.Data()));
+  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.pdf",label.Data(),
+        centMin,centMax,AddOn.Data()));
+  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.png",label.Data(),
+        \centMin,centMax,AddOn.Data()));
+  canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.C",label.Data(),
+        centMin,centMax,AddOn.Data()));
   TFile *fRAA=new TFile(outputfile.Data(),"recreate");
   fRAA->cd();
   gNuclearModification->Write();
@@ -285,18 +273,14 @@ cout<<systnorm<<endl;
 }
 
 
-int main(int argc, char *argv[])
-{
-  if(argc==7)
-    {
-      NuclearModificationFactor(argv[1], argv[2], argv[3], argv[4], atof(argv[5]), atof(argv[6]));
-      return 0;
-    }
-  else
-    {
-      std::cout << "Wrong number of inputs" << std::endl;
-      return 1;
-    }
+int main(int argc, char *argv[]) {
+  if(argc==7) {
+    NuclearModificationFactor(
+        argv[1], argv[2], argv[3], argv[4], atof(argv[5]), atof(argv[6]));
+    return 0;
+  }
+  else {
+    std::cout << "Wrong number of inputs" << std::endl;
+    return 1;
+  }
 }
-
-

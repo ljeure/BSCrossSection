@@ -18,8 +18,8 @@ double npart[nBinsCent] = {358.8, 226.7, 109.2, 21.87};
 //https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideHeavyIonCentrality?rev=100#Ncoll_Npart_5_TeV
 //https://twiki.cern.ch/twiki/pub/CMS/HI2015DailyMeetings/Ncoll_Npart_04Dec2015.pdf
 
-const int nBinsReweight=5;
-double ptBinsReweight[nBinsReweight+1]={7.,10.,15.,20.,30,50};
+const int nBinsReweight=1;
+double ptBinsReweight[nBinsReweight+1]={10.,60};
 
 const int BIN_NUM= 1196;
 const int HMIN=1;

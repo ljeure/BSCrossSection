@@ -18,9 +18,8 @@ using namespace std;
 
 //void Bplusdsigmadpt(TString inputFONLLdat, TString outputFONLL,TString label)
 void Bplusdsigmadpt(TString inputFONLLdat = "pp_Bplus_5p03TeV_y2p4", 
-TString outputFONLL = "fonllOutput_pp_Bplus_5p03TeV_y2p4.root",
-TString label = "pp")
-{
+    TString outputFONLL = "fonllOutput_pp_Bplus_5p03TeV_y2p4.root",
+    TString label = "pp") {
   double norm=0.401;           //FF of B->B+, i.e., B fraction
   gROOT->SetStyle("Plain");
   gStyle->SetOptTitle(0);
@@ -28,28 +27,27 @@ TString label = "pp")
 
   ifstream getdata(Form("fo_%s.dat",inputFONLLdat.Data()));
 
-  if(!getdata.is_open())
-    {
-      cout<<"Opening the file fails"<<endl;
-    }
+  if(!getdata.is_open()){
+    cout<<"Opening the file fails"<<endl;
+  }
 
   float central[BIN_NUM];
-  float min_all[BIN_NUM],max_all[BIN_NUM],min_sc[BIN_NUM],max_sc[BIN_NUM],min_mass[BIN_NUM],max_mass[BIN_NUM],min_pdf[BIN_NUM],max_pdf[BIN_NUM];
+  float min_all[BIN_NUM],max_all[BIN_NUM],min_sc[BIN_NUM],max_sc[BIN_NUM],
+        min_mass[BIN_NUM],max_mass[BIN_NUM],min_pdf[BIN_NUM],max_pdf[BIN_NUM];
   int i;
   float tem;
-  for(i=0;i<BIN_NUM;i++)
-    {
-      getdata>>tem;
-      getdata>>central[i];
-      getdata>>min_all[i];
-      getdata>>max_all[i];
-      getdata>>min_sc[i];
-      getdata>>max_sc[i];
-      getdata>>min_mass[i];
-      getdata>>max_mass[i];
-      getdata>>min_pdf[i];
-      getdata>>max_pdf[i];
-    }
+  for(i=0;i<BIN_NUM;i++) {
+    getdata>>tem;
+    getdata>>central[i];
+    getdata>>min_all[i];
+    getdata>>max_all[i];
+    getdata>>min_sc[i];
+    getdata>>max_sc[i];
+    getdata>>min_mass[i];
+    getdata>>max_mass[i];
+    getdata>>min_pdf[i];
+    getdata>>max_pdf[i];
+  }
   
   TH1F* hpt = new TH1F("hpt","",BIN_NUM,HMIN,HMAX);
   TH1F* hminall = new TH1F("hminall","",BIN_NUM,HMIN,HMAX);

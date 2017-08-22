@@ -3,8 +3,12 @@
 #include "TLegendEntry.h"
 #include "../Systematics/systematics.C"
 
-void CrossSectionRatio(TString inputFONLL="ROOTfiles/output_inclusiveDd0meson_5TeV_y1.root", TString input="ROOTfiles/hPtSpectrumBplusPP.root", TString efficiency="test.root",TString outputplot="myplot.root",int usePbPb=1,TString label="PbPb",int doDataCor = 0,double lumi=1.,Float_t centMin=0., Float_t centMax=100.)
-{
+void CrossSectionRatio(
+    TString inputFONLL="ROOTfiles/output_inclusiveDd0meson_5TeV_y1.root",
+    TString input="ROOTfiles/hPtSpectrumBplusPP.root",
+    TString efficiency="test.root",TString outputplot="myplot.root",
+    int usePbPb=1,TString label="PbPb",int doDataCor = 0,double lumi=1.,
+    Float_t centMin=0., Float_t centMax=100.) {
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
   gStyle->SetEndErrorSize(0);
@@ -13,22 +17,32 @@ void CrossSectionRatio(TString inputFONLL="ROOTfiles/output_inclusiveDd0meson_5T
   std::cout<<"step1"<<std::endl;
 
   TFile* fileReference = new TFile(inputFONLL.Data());  
-  TGraphAsymmErrors* gaeBplusReference = (TGraphAsymmErrors*)fileReference->Get("gaeSigmaBplus");
+  TGraphAsymmErrors* gaeBplusReference =
+    (TGraphAsymmErrors*)fileReference->Get("gaeSigmaBplus");
   
-  if (!(usePbPb==1||usePbPb==0)) std::cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, you are using a non valid isPbPb option"<<std::endl;
+  if (!(usePbPb==1||usePbPb==0)) 
+    std::cout<<"ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, you are using a non valid isPbPb option"<<std::endl;
   bool isPbPb=(bool)(usePbPb);
 
   TFile* file = new TFile(input.Data());  
   TFile* fileeff = new TFile(efficiency.Data());
   TH1F* hEff = (TH1F*)fileeff->Get("hEff");
-  
+ 
+
   TH1F* hPtSigma = (TH1F*)file->Get("hPt");
-   if(doDataCor != 1) hPtSigma->Divide(hEff);
-   hPtSigma->Scale(1./(2*lumi*BRchain));
-   hPtSigma->SetName("hPtSigma");
+
+  if(doDataCor != 1)
+    hPtSigma->Divide(hEff);
+ 
+  hPtSigma->Scale(1./(2*lumi*BRchain));
+  hPtSigma->SetName("hPtSigma");
+ 
   
-  Double_t xr[nBins], xrlow[nBins], xrhigh[nBins], ycross[nBins],ycrossstat[nBins],ycrosssysthigh[nBins],ycrosssystlow[nBins], yFONLL[nBins];
-  Double_t yratiocrossFONLL[nBins], yratiocrossFONLLstat[nBins], yratiocrossFONLLsysthigh[nBins], yratiocrossFONLLsystlow[nBins];
+  Double_t xr[nBins], xrlow[nBins], xrhigh[nBins], ycross[nBins],
+           ycrossstat[nBins],ycrosssysthigh[nBins],ycrosssystlow[nBins], 
+           yFONLL[nBins];
+  Double_t yratiocrossFONLL[nBins], yratiocrossFONLLstat[nBins], 
+           yratiocrossFONLLsysthigh[nBins], yratiocrossFONLLsystlow[nBins];
   Double_t yFONLLrelunclow[nBins], yFONLLrelunchigh[nBins], yunity[nBins];
   
   std::cout<<"step2"<<std::endl;
