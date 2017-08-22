@@ -15,6 +15,7 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
     TString inputPbPb="ROOTfiles/CrossSectionPbPb.root",TString label="PbPb",
     TString outputfile="RAAfile.root", Float_t centMin=0.,
     Float_t centMax=100.) {
+  std::cout << "1\n";
 
   float pti = ptBins[0]-2.;
   float pte = ptBins[nBins]+5.;
@@ -26,6 +27,7 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
     pti = 5;
     pte = 110.;
   }
+  std::cout << "2\n";
 
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
@@ -35,15 +37,18 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
   gStyle->SetPadLeftMargin(0.12);
   gStyle->SetPadTopMargin(0.075);
   gStyle->SetPadBottomMargin(0.12);
+  std::cout << "3\n";
 
   TFile *fpp=new TFile(inputPP.Data());
   TFile *fPbPb=new TFile(inputPbPb.Data());
+  std::cout << "4\n";
 
   TH1D*hSigmaPPStat=(TH1D*)fpp->Get("hPtSigma");
   hSigmaPPStat->SetName("hSigmaPPStat");
   TH1D*hNuclearModification=(TH1D*)fPbPb->Get("hPtSigma");
   hNuclearModification->SetName("hNuclearModification");
   hNuclearModification->Divide(hSigmaPPStat);
+  std::cout << "5\n";
 
   double apt[nBins];
   
@@ -58,24 +63,34 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
     aptl[ibin] = (ptBins[ibin+1]-ptBins[ibin])/2;
     bin_num[ibin]=aptl[ibin]/binsize*2;
   }
+  std::cout << "7\n";
 
   Double_t xr[nBins], yr[nBins], xrlow[nBins], yrlow[nBins],xrhigh[nBins],yrhigh[nBins];
+  std::cout << "nbins " << nBins << std::endl;
   for(int i=0;i<nBins;i++) {
+    std::cout << "71 " << std::endl;
     yr[i] = hNuclearModification->GetBinContent(i+1);
+    std::cout << "711 " << std::endl;
     double systematic=0.01*systematicsForRAA(
         hNuclearModification->GetBinCenter(i+1),centMin,centMax,0.,0.);
+    std::cout << "72 " << std::endl;
     yrlow[i] = hNuclearModification->GetBinContent(i+1)*systematic;
+    std::cout << "73 " << std::endl;
     yrhigh[i] =hNuclearModification->GetBinContent(i+1)*systematic;
+    std::cout << "74 " << std::endl;
   }
+  std::cout << "8\n";
 
   TGraphAsymmErrors* gNuclearModification =
     new TGraphAsymmErrors(nBins,apt,yr,aptl,aptl,yrlow,yrhigh);
   gNuclearModification->SetName("gNuclearModification");
+  std::cout << "9\n";
 
   TCanvas*canvasRAA=new TCanvas("canvasRAA","canvasRAA",600,600);
   canvasRAA->cd();
   canvasRAA->SetLogx();
 
+  std::cout << "10\n";
   TH2F* hemptyEff=new TH2F("hemptyEff","",50,pti,pte,10.,0,1.55);  
   hemptyEff->GetXaxis()->CenterTitle();
   hemptyEff->GetYaxis()->CenterTitle();
@@ -95,11 +110,13 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
   hemptyEff->SetMinimum(0.);
   hemptyEff->Draw();
 
+  std::cout << "11\n";
   TLine *line = new TLine(pti,1,pte,1);
   line->SetLineStyle(2);
   line->SetLineWidth(2);
   line->Draw();
 
+  std::cout << "12\n";
   gNuclearModification->SetFillColor(kAzure+7);//1
   gNuclearModification->SetFillStyle(3001);//0
   gNuclearModification->SetLineWidth(1);//3
@@ -136,6 +153,7 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
   texY->SetTextSize(0.045);
   texY->SetLineWidth(2);
 
+  std::cout << "13\n";
   TLatex* texlumi = new TLatex(0.13,0.936,
       "27.4 pb^{-1} (5.02 TeV pp) + 350.68 #mub^{-1} (5.02 TeV PbPb)");
   texlumi->SetNDC();
@@ -263,7 +281,7 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
   canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.pdf",label.Data(),
         centMin,centMax,AddOn.Data()));
   canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.png",label.Data(),
-        \centMin,centMax,AddOn.Data()));
+        centMin,centMax,AddOn.Data()));
   canvasRAA->SaveAs(Form("plotRAA/canvasRAA%s_%.0f_%.0f%s.C",label.Data(),
         centMin,centMax,AddOn.Data()));
   TFile *fRAA=new TFile(outputfile.Data(),"recreate");
@@ -274,6 +292,7 @@ void NuclearModificationFactor(TString inputPP="ROOTfiles/CrossSectionPP.root",
 
 
 int main(int argc, char *argv[]) {
+  std::cout << "starts main\n";
   if(argc==7) {
     NuclearModificationFactor(
         argv[1], argv[2], argv[3], argv[4], atof(argv[5]), atof(argv[6]));

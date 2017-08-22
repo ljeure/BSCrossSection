@@ -1,6 +1,5 @@
 # what is the OUTPUTFILEMCSTUDY for? It's giving errors in pp CrossSection Ratio
-
-#
+# what are central points of analysis?
 
 
 
