@@ -21,25 +21,25 @@ double CentBins[nCentBins+1] = {0.,10.,30.,50.,100.};
 // =============================================================================================================
 // D meson decay
 // =============================================================================================================
-double BtomumuKBRUncertainty	= 3.07;			// from PDG
+double BtomumuKBRUncertainty  = 3.07;     // from PDG
 // =============================================================================================================
 // pp uncertainty
 // =============================================================================================================
 
 // Normalization uncertainty
-double ppLumiUncertainty 	= 12;			// updated by YJ to the lumi POG number       
+double ppLumiUncertainty  = 12;     // updated by YJ to the lumi POG number       
 
 // Point-to-point
-double ppTrackingEfficiency 	= 4;   			    // single track systematics from D* studies
-double PbPbTrackingEfficiency 	= 5;   			// single track systematics from D* studies
+double ppTrackingEfficiency   = 4;            // single track systematics from D* studies
+double PbPbTrackingEfficiency   = 5;        // single track systematics from D* studies
 double ppAlignment = 2.8; //alignment systematic from pp 13 TeV analysis
 double PbPbAlignment = 2.8; //alignment systematic from pp 13 TeV analysis
 double ppLifetime = 0.3; //from 13 TeV analysis
 double PbPbLifetime = 0.3; //from 13 TeV analysis
 
-TH1D*  ppSignalExtraction;			                 	// (6/29/2016)
-TH1D*  ppMesonSelection;				                // (6/29/2016)
-TH1D*  ppTagAndProbe;				                // (6/29/2016)
+TH1D*  ppSignalExtraction;                        // (6/29/2016)
+TH1D*  ppMesonSelection;                        // (6/29/2016)
+TH1D*  ppTagAndProbe;                       // (6/29/2016)
 
 TF1 *fPPPtShape = new TF1("fPPPtShapeSig","[0]+[1]/(x)+[2]/x/x+[3]*x");
 
@@ -51,16 +51,16 @@ TH1D* ppEff = (TH1D*)ppMCEfffile->Get("hEff");
 // =============================================================================================================
 
 // Normalization uncertainty
-double PbPbNMBUncertainty	= 2;			// uncertainty associated with minbias events,
-double TAAUncertainty0to100	= 8.9;			// Updated number (4/7/2016)
-double TAAUncertainty0to10	= 1.7;			// Updated number (4/7/2016)
-double PbPbLumiUncertainty	= 10;			// 10% for the moment, to be updated (from Daniel), NOT used
+double PbPbNMBUncertainty = 2;      // uncertainty associated with minbias events,
+double TAAUncertainty0to100 = 8.9;      // Updated number (4/7/2016)
+double TAAUncertainty0to10  = 1.7;      // Updated number (4/7/2016)
+double PbPbLumiUncertainty  = 10;     // 10% for the moment, to be updated (from Daniel), NOT used
 
 // Point-to-point
 
-TH1D*  PbPbSignalExtraction;			                 	// (6/29/2016)
-TH1D*  PbPbMesonSelection;				                // (6/29/2016)
-TH1D*  PbPbTagAndProbe;				                // (6/29/2016)
+TH1D*  PbPbSignalExtraction;                        // (6/29/2016)
+TH1D*  PbPbMesonSelection;                        // (6/29/2016)
+TH1D*  PbPbTagAndProbe;                       // (6/29/2016)
 TF1 *fPbPbPtShape= new TF1("fPbPbPtShapeSig","[0]+[1]/(x)+[2]/x/x+[3]*x");
 
 TFile* PbPbMCEfffile = new TFile("../CrossSection/ROOTfiles/MCstudiesPbPb.root");
@@ -87,17 +87,17 @@ bool initialized = 0;
 void initializationPP()
 {
    ppMesonSelection = new TH1D("ppMesonSelection","",nPtBins,PtBins);
-   ppMesonSelection->SetBinContent(1,		2.7);
+   ppMesonSelection->SetBinContent(1,   2.7);
 
    ppSignalExtraction = new TH1D("ppSignalExtraction","",AnaBins,AnaPtBins);
-   ppSignalExtraction->SetBinContent(1,		3.8);
-   ppSignalExtraction->SetBinContent(2,		3.8);
-   ppSignalExtraction->SetBinContent(3,		3.8);
-   ppSignalExtraction->SetBinContent(4,		3.8);
-   ppSignalExtraction->SetBinContent(5,		3.8);
+   ppSignalExtraction->SetBinContent(1,   3.8);
+   ppSignalExtraction->SetBinContent(2,   3.8);
+   ppSignalExtraction->SetBinContent(3,   3.8);
+   ppSignalExtraction->SetBinContent(4,   3.8);
+   ppSignalExtraction->SetBinContent(5,   3.8);
 
    ppTagAndProbe = new TH1D("ppTagAndProbe","",nPtBins,PtBins);
-   ppTagAndProbe->SetBinContent(1,		10.0);
+   ppTagAndProbe->SetBinContent(1,    10.0);
    
    fPPPtShape->SetParameters(0.999265,-0.0458006,-0.181359,0);
    }
@@ -106,17 +106,17 @@ void initializationPbPbCent0100()
 {
 
    PbPbMesonSelection = new TH1D("PbPbMesonSelection","",nPtBins,PtBins);
-   PbPbMesonSelection->SetBinContent(1,		8.7);
+   PbPbMesonSelection->SetBinContent(1,   8.7);
 
    PbPbSignalExtraction = new TH1D("PbPbSignalExtraction","",AnaBins,AnaPtBins);
-   PbPbSignalExtraction->SetBinContent(1,	12.0);
-   PbPbSignalExtraction->SetBinContent(2,	12.0);
-   PbPbSignalExtraction->SetBinContent(3,	12.0);
-   PbPbSignalExtraction->SetBinContent(4,	12.0);
-   PbPbSignalExtraction->SetBinContent(5,	12.0);
+   PbPbSignalExtraction->SetBinContent(1, 12.0);
+   PbPbSignalExtraction->SetBinContent(2, 12.0);
+   PbPbSignalExtraction->SetBinContent(3, 12.0);
+   PbPbSignalExtraction->SetBinContent(4, 12.0);
+   PbPbSignalExtraction->SetBinContent(5, 12.0);
 
    PbPbTagAndProbe = new TH1D("PbPbTagAndProbe","",nPtBins,PtBins);
-   PbPbTagAndProbe->SetBinContent(1,		13.0);
+   PbPbTagAndProbe->SetBinContent(1,    13.0);
 
    fPbPbPtShape->SetParameters(0.984161,0.0593406,-0.3992,0.000271564);
    }
@@ -124,30 +124,30 @@ void initializationPbPbCent0100()
 void initializationRAA()
 {
    RAASignalExtraction = new TH1D("RAASignalExtraction","",nPtBins,PtBins);
-   RAASignalExtraction->SetBinContent(1,	0.5);
+   RAASignalExtraction->SetBinContent(1,  0.5);
 }
 
 void initializationRAACent()
 {
    TAAUncertainty = new TH1D("TAAUncertainty","",nCentBins,CentBins);
-   TAAUncertainty->SetBinContent(1,	1.7);
-   TAAUncertainty->SetBinContent(2,	2.4);
-   TAAUncertainty->SetBinContent(3,	4.9);
-   TAAUncertainty->SetBinContent(4,	15.0);
+   TAAUncertainty->SetBinContent(1, 1.7);
+   TAAUncertainty->SetBinContent(2, 2.4);
+   TAAUncertainty->SetBinContent(3, 4.9);
+   TAAUncertainty->SetBinContent(4, 15.0);
 }
 
 void initializationPbPbCent010()
 {
 
    PbPbMesonSelection = new TH1D("PbPbMesonSelection","",nPtBins,PtBins);
-   PbPbMesonSelection->SetBinContent(1,		0.);
+   PbPbMesonSelection->SetBinContent(1,   0.);
 
 
    PbPbSignalExtraction = new TH1D("PbPbSignalExtraction","",nPtBins,PtBins);
-   PbPbSignalExtraction->SetBinContent(1,	0.);
+   PbPbSignalExtraction->SetBinContent(1, 0.);
    
    PbPbTagAndProbe = new TH1D("PbPbTagAndProbe","",nPtBins,PtBins);
-   PbPbTagAndProbe->SetBinContent(1,		10.0);
+   PbPbTagAndProbe->SetBinContent(1,    10.0);
     
    fPbPbPtShape->SetParameters(0.984161,0.0593406,-0.3992,0.000271564);
 }
@@ -221,7 +221,7 @@ float systematicsForRAA(double pt,double centL=0,double centH=100, double HLT=0,
    sys+=ppLifetime*ppLifetime;
    sys+=PbPbAlignment*PbPbAlignment;
    sys+=PbPbLifetime*PbPbLifetime;
-	    
+      
    if (stage==3) return sqrt(sys);
 
    sys+= ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(pt))*
@@ -333,7 +333,7 @@ float systematicsForRAACent(double cent,double centL=0,double centH=100, double 
 
    sys+= TAAUncertainty->GetBinContent(TAAUncertainty->FindBin(cent))*
          TAAUncertainty->GetBinContent(TAAUncertainty->FindBin(cent));
-	    
+      
    if (stage==3) return sqrt(sys);
 
    sys+= ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(PtBins[0]))*
