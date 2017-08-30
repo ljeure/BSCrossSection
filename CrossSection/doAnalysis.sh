@@ -1,7 +1,4 @@
-# what is the OUTPUTFILEMCSTUDY for? It's giving errors in pp CrossSection Ratio
-# what are central points of analysis?
-
-
+# should I use EFFCOR in CrossSectionRation? Not using it 
 
 #!/bin/bash
 #source clean.sh
@@ -10,9 +7,9 @@ CENTPbPbMAX=100
 #Central point of the analysis
 
 DOANALYSISPP_FONLL=0
-DOANALYSISPP_FIT=0
+DOANALYSISPP_FIT=1
 DOANALYSISPP_MCSTUDY=1
-DOANALYSISPP_CROSS=0
+DOANALYSISPP_CROSS=1
 
 DOANALYSISPbPb_FIT=0
 DOANALYSISPbPb_MCSTUDY=0
@@ -26,7 +23,7 @@ INPUTMCPP="../../bsTMVACDozen/merged-files/MLP_and_BDT_MC.root"
 INPUTDATAPP="../../bsTMVACDozen/merged-files/MLP_and_BDT_DATA.root"
 
 ## PbPb MONTE CARLO
-INPUTMCPbPb="/afs/cern.ch/user/c/cdozen/public/forLuke/loop_Bs0_PbPb_MC_25072017_pthat10.root"
+INPUTMCPbPb="/data/leure/forLuke/loop_Bs0_PbPb_MC_25072017_pthat10.root"
 
 ## PbPb DATA 
 INPUTDATAPbPb="/data/wangj/Data2015/Bntuple/PbPb/Bntuple_BfinderData_PbPb_20160406_bPt5jpsiPt0tkPt0p8_BpB0BsX_skimhlt.root"
@@ -43,18 +40,26 @@ ISDOWEIGHTPP=0
 SELGENPP="TMath::Abs(Gy)<2.4&&abs(GpdgId)==521&&GisSignal==1"
 
 #pp GA
-CUTPP="TMath::Abs(By)<2.4&&TMath::Abs(Bmumumass-3.096916)<0.15&&Bmass>5&&Bmass<6&&Btrk1Pt>.687&&Btrk2Pt>.654&&Bchi2cl>.00431&&BsvpvDistance/BsvpvDisErr>3.05&&Bd0/Bd0Err>212&&cos(Bdtheta)>-.232&&Bmu1pt>.88&&Bmu2pt>.589&&Bpt>5.75&&abs(Btktkmass-1.019455)<.0384&&Blxy>-.0106"
+
+#CUTPP="TMath::Abs(By)<2.4&&TMath::Abs(Bmumumass-3.096916)<0.15&&Bmass>5&&Bmass<6&&Btrk1Pt>.687&&Btrk2Pt>.654&&Bchi2cl>.00431&&BsvpvDistance/BsvpvDisErr>3.05&&Bd0/Bd0Err>212&&cos(Bdtheta)>-.232&&Bmu1pt>.88&&Bmu2pt>.589&&Bpt>5.75&&abs(Btktkmass-1.019455)<.0384&&Blxy>-.0106"
+
+# Candan's unoptimized cuts (used in Julia's slides)
+CUTPP="TMath::Abs(By)<2.4&&TMath::Abs(Bmumumass-3.096916)<0.15&&Bmass>5&&Bmass<6&&Btrk1Pt>1.5&&Btrk2Pt>1.5&&Bchi2cl>.0132&&BsvpvDistance/BsvpvDisErr>3.05&&Bd0/Bd0Err>2&&cos(Bdtheta)>.26&&Bmu1pt>1.5&&Bmu2pt>1.5&&Bpt>5.75&&abs(Btktkmass-1.019455)<.0155&&Blxy>.025"
 RECOONLYPP=$CUTPP
 
 TRGPP="(HLT_HIL1DoubleMu0_v1)"
-OUTPUTFILEPP="ROOTfiles/hPtSpectrumBplusPP.root"
+OUTPUTFILEPP="ROOTfiles/hPtSpectrumBsPP.root"
 OUTPUTFILEMCSTUDYPP="ROOTfiles/MCstudiesPP.root"
 OUTPUTFILEPlotPP="ROOTfiles/CrossSectionPP.root"
 
-OUTPUTFILEPbPb="ROOTfiles/hPtSpectrumBplusPbPb.root"
+OUTPUTFILEPbPb="ROOTfiles/hPtSpectrumBsPbPb.root"
 
 #SETTING for NP fit
-NPFIT_PP="3.12764e1*TMath::Gaus(x,5.33166,3.64663e-2)*(x<5.33166)+(x>=5.33166)*3.12764e1*TMath::Gaus(x,5.33166,1.5204e-1)+2.11124e2*TMath::Erf(-(x-5.14397)/6.43194e-2) + 2.11124e2"
+#NPFIT_PP="3.12764e1*TMath::Gaus(x,5.33166,3.64663e-2)*(x<5.33166)+(x>=5.33166)*3.12764e1*TMath::Gaus(x,5.33166,1.5204e-1)+2.11124e2*TMath::Erf(-(x-5.14397)/6.43194e-2) + 2.11124e2"
+NPFIT_PP="0"
+
+# iNP from https://github.com/boundino/Bntuple/blob/master/CrossSection/Analysis/fitBs.C
+#NPFIT_PP="TMath::Gaus(x,5.36800e+00,5.77122e-02)/(sqrt(2*3.14159)*TMath::Abs(5.77122e-02))"
 
 if [ $DOANALYSISPP_FONLL -eq 1 ]; then      
 root -l -b -q Bsdsigmadpt.cc
@@ -72,7 +77,7 @@ echo "-------------------------------------------------------------------------"
 
 if [ $DOANALYSISPP_MCSTUDY -eq 1 ]; then      
 g++ MCefficiency.C $(root-config --cflags --libs) -g -o MCefficiency.exe 
-./MCefficiency.exe  0 "$INPUTMCPP"  "$SELGENPP" "$SELGENPPACCPP"  "$RECOONLYPP" "$CUTPP&&$TRGPPMC"  "$LABELPP" "$OUTPUTFILEMCSTUDYPP" "$ISDOWEIGHTPP" "$CENTPbPbMIN" "$CENTPbPbMAX"
+./MCefficiency.exe  0 "$INPUTMCPP"  "$SELGENPP" "$SELGENPPACCPP"  "$RECOONLYPP" "$CUTPP&&$TRGPP"  "$LABELPP" "$OUTPUTFILEMCSTUDYPP" "$ISDOWEIGHTPP" "$CENTPbPbMIN" "$CENTPbPbMAX"
 rm MCefficiency.exe
 fi
 
@@ -80,7 +85,7 @@ echo "-------------------------------------------------------------------------"
 
 if [ $DOANALYSISPP_CROSS -eq 1 ]; then      
 g++ CrossSectionRatio.C $(root-config --cflags --libs) -g -o CrossSectionRatio.exe 
-./CrossSectionRatio.exe "$FONLLOUTPUTFILE"  "$OUTPUTFILEPP" "$OUTPUTFILEMCSTUDYPP" "$OUTPUTFILEPlotPP" 0 "$LABELPP" 0 "$LUMIPP"
+./CrossSectionRatio.exe "$FONLLOUTPUTFILE"  "$OUTPUTFILEPP" "$OUTPUTFILEMCSTUDYPP" "$OUTPUTFILEPlotPP" 0 "$LABELPP" 1 "$LUMIPP"
 rm CrossSectionRatio.exe
 fi
 
@@ -92,6 +97,8 @@ LUMIPbPb=13.14
 
 ISMCPbPb=0
 ISDOWEIGHTPbPb=0
+SELGENPbPbACCPbPb="TMath::Abs(Gy)<2.4&&abs(GpdgId)==521&&GisSignal==1&&TMath::Abs(Gy)<2.4&& ((TMath::Abs(Gmu1eta)<1.2 && Gmu1pt>3.5) || (TMath::Abs(Gmu1eta)>1.2 && TMath::Abs(Gmu1eta)<2.1 && Gmu1pt>(5.77-1.8*TMath::Abs(Gmu1eta))) || (TMath::Abs(Gmu1eta)>2.1 && TMath::Abs(Gmu1eta)<2.4 && Gmu1pt>1.8)) && ((TMath::Abs(Gmu2eta)<1.2 && Gmu2pt>3.5) || (TMath::Abs(Gmu2eta)>1.2 && TMath::Abs(Gmu2eta)<2.1 && Gmu2pt>(5.77-1.8*TMath::Abs(Gmu2eta))) || (TMath::Abs(Gmu2eta)>2.1 && TMath::Abs(Gmu2eta)<2.4 && Gmu2pt>1.8)) && Gtk1pt>0.5 && TMath::Abs(Gtk1eta)<2.4"
+
 SELGENPbPb="TMath::Abs(Gy)<2.4&&abs(GpdgId)==521&&GisSignal==1"
 
 #GA
@@ -99,6 +106,7 @@ CUTPbPb="TMath::Abs(By)<2.4&&abs(Bmumumass-3.096916)<0.15&&Bmass>5.&&Bmass<6.&&B
 RECOONLYPbPb="1"
 
 TRGPbPb="(HLT_HIL1DoubleMu0_v1 || HLT_HIL1DoubleMu0_part1_v1 || HLT_HIL1DoubleMu0_part2_v1 || HLT_HIL1DoubleMu0_part3_v1)"
+
 OUTPUTFILEMCSTUDYPbPb="ROOTfiles/MCstudiesPbPb.root"
 OUTPUTFILEPlotPbPb="ROOTfiles/CrossSectionPbPb.root"
 
@@ -115,7 +123,7 @@ echo "-------------------------------------------------------------------------"
 
 if [ $DOANALYSISPbPb_MCSTUDY -eq 1 ]; then      
 g++ MCefficiency.C $(root-config --cflags --libs) -g -o MCefficiency.exe 
-./MCefficiency.exe 1 "$INPUTMCPbPb"  "$SELGENPbPb" "$SELGENPbPbACCPbPb"  "$RECOONLYPbPb" "$CUTPbPb&&$TRGPbPbMC"  "$LABELPbPb" "$OUTPUTFILEMCSTUDYPbPb" "$ISDOWEIGHTPbPb" "$CENTPbPbMIN" "$CENTPbPbMAX"
+./MCefficiency.exe 1 "$INPUTMCPbPb"  "$SELGENPbPb" "$SELGENPbPbACCPbPb"  "$RECOONLYPbPb" "$CUTPbPb&&$TRGPbPb"  "$LABELPbPb" "$OUTPUTFILEMCSTUDYPbPb" "$ISDOWEIGHTPbPb" "$CENTPbPbMIN" "$CENTPbPbMAX"
 rm MCefficiency.exe
 fi
 
@@ -135,4 +143,3 @@ g++ NuclearModificationFactor.C $(root-config --cflags --libs) -g -o NuclearModi
 rm NuclearModificationFactor.exe
 fi
 echo "-------------------------------------------------------------------------"
-

@@ -69,19 +69,6 @@ TH1D* PbPbEff = (TH1D*)PbPbMCEfffile->Get("hEff");
 // RAA uncertainty, for systematic that can cancel such as PDF variation
 TH1D*  RAASignalExtraction;
 
-//RAA Rapidity
-TFile* ppMCEfffileY = new TFile("../CrossSection/ROOTfiles/MCstudiesPP_Y.root");
-TH1D* ppEffY = (TH1D*)ppMCEfffileY->Get("hEff");
-TFile* PbPbMCEfffileY = new TFile("../CrossSection/ROOTfiles/MCstudiesPbPb_Y.root");
-TH1D* PbPbEffY = (TH1D*)PbPbMCEfffileY->Get("hEff");
-
-//RAA Centrality
-TH1D*  TAAUncertainty;
-TFile* ppMCEfffileCent = new TFile("../CrossSection/ROOTfiles/MCstudiesPP_INC.root");
-TH1D* ppEffCent = (TH1D*)ppMCEfffileCent->Get("hEff");
-TFile* PbPbMCEfffileCent = new TFile("../CrossSection/ROOTfiles/MCstudiesPbPb_CENT.root");
-TH1D* PbPbEffCent = (TH1D*)PbPbMCEfffileCent->Get("hEff");
-
 bool initialized = 0;
 
 void initializationPP()
@@ -127,15 +114,6 @@ void initializationRAA()
    RAASignalExtraction->SetBinContent(1,  0.5);
 }
 
-void initializationRAACent()
-{
-   TAAUncertainty = new TH1D("TAAUncertainty","",nCentBins,CentBins);
-   TAAUncertainty->SetBinContent(1, 1.7);
-   TAAUncertainty->SetBinContent(2, 2.4);
-   TAAUncertainty->SetBinContent(3, 4.9);
-   TAAUncertainty->SetBinContent(4, 15.0);
-}
-
 void initializationPbPbCent010()
 {
 
@@ -156,7 +134,6 @@ void initialization(double centL=0,double centH=100){
 
 initializationPP();
 initializationRAA();
-initializationRAACent();
 if (centL==0&&centH==100) initializationPbPbCent0100();
 if (centL==0&&centH==10) initializationPbPbCent010();
 initialized=1;
@@ -229,118 +206,6 @@ float systematicsForRAA(double pt,double centL=0,double centH=100, double HLT=0,
 
    sys+= PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(pt))*
          PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(pt));
-   
-   return sqrt(sys);
-}
-
-// =============================================================================================================
-// RAA systematics Rapidity
-// =============================================================================================================
-float systematicsForRAAY(double cent,double centL=0,double centH=100, double HLT=0, int stage=0)
-{
-   if (!initialized && centL==0&&centH==100) initialization(centL,centH);
-   if (!initialized && centL==0&&centH==10) initialization(centL,centH);
-
-   double sys=0;
-
-   if (stage==1) return sqrt(sys);
-   
-   sys+= PbPbSignalExtraction->GetBinContent(PbPbSignalExtraction->FindBin(PtBins[0]))*
-         PbPbSignalExtraction->GetBinContent(PbPbSignalExtraction->FindBin(PtBins[0]));
-   sys+= ppSignalExtraction->GetBinContent(ppSignalExtraction->FindBin(PtBins[0]))*
-         ppSignalExtraction->GetBinContent(ppSignalExtraction->FindBin(PtBins[0]));
-
-   if (stage==2) return sqrt(sys);
-
-   sys+= ppMesonSelection->GetBinContent(ppMesonSelection->FindBin(PtBins[0]))*
-         ppMesonSelection->GetBinContent(ppMesonSelection->FindBin(PtBins[0]));
-   sys+= PbPbMesonSelection->GetBinContent(PbPbMesonSelection->FindBin(PtBins[0]))*
-         PbPbMesonSelection->GetBinContent(PbPbMesonSelection->FindBin(PtBins[0]));
-
-   sys+= ppEffY->GetBinError(ppEffY->FindBin(cent))/ppEffY->GetBinContent(ppEffY->FindBin(cent))*100*
-         ppEffY->GetBinError(ppEffY->FindBin(cent))/ppEffY->GetBinContent(ppEffY->FindBin(cent))*100;
-   sys+= PbPbEffY->GetBinError(PbPbEffY->FindBin(cent))/PbPbEffY->GetBinContent(PbPbEffY->FindBin(cent))*100*
-         PbPbEffY->GetBinError(PbPbEffY->FindBin(cent))/PbPbEffY->GetBinContent(PbPbEffY->FindBin(cent))*100;
-
-   sys+=fPPPtShape->Eval(PtBins[0])*fPPPtShape->Eval(PtBins[0]);
-   sys+=fPbPbPtShape->Eval(PtBins[0])*fPbPbPtShape->Eval(PtBins[0]);
-
-   sys+=(ppTrackingEfficiency)*(ppTrackingEfficiency);
-   sys+=(PbPbTrackingEfficiency)*(PbPbTrackingEfficiency);
-   sys+=ppAlignment*ppAlignment;
-   sys+=ppLifetime*ppLifetime;
-   sys+=PbPbAlignment*PbPbAlignment;
-   sys+=PbPbLifetime*PbPbLifetime;
-
-   if (stage==3) return sqrt(sys);
-
-   sys+= ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(PtBins[0]))*
-         ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(PtBins[0]));
-
-   sys+= PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(PtBins[0]))*
-         PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(PtBins[0]));
-   
-   return sqrt(sys);
-}
-// =============================================================================================================
-// RAA systematics Centrality
-// =============================================================================================================
-float normalizationUncertaintyForRAACent(double centL=0,double centH=100)
-{
-   double sys = 0;
-   sys+=ppLumiUncertainty*ppLumiUncertainty;
-   sys+=PbPbNMBUncertainty*PbPbNMBUncertainty;
-   return sqrt(sys);
-}
-
-float systematicsForRAACent(double cent,double centL=0,double centH=100, double HLT=0, int stage=0)
-{
-   if (!initialized && centL==0&&centH==100) initialization(centL,centH);
-   if (!initialized && centL==0&&centH==10) initialization(centL,centH);
-
-   double sys=0;
-
-   if (cent<0) return 0;
-  
-   if (stage==1) return sqrt(sys);
-   
-   sys+= PbPbSignalExtraction->GetBinContent(PbPbSignalExtraction->FindBin(PtBins[0]))*
-         PbPbSignalExtraction->GetBinContent(PbPbSignalExtraction->FindBin(PtBins[0]));
-   sys+= ppSignalExtraction->GetBinContent(ppSignalExtraction->FindBin(PtBins[0]))*
-         ppSignalExtraction->GetBinContent(ppSignalExtraction->FindBin(PtBins[0]));
-
-   if (stage==2) return sqrt(sys);
-
-   sys+= ppMesonSelection->GetBinContent(ppMesonSelection->FindBin(PtBins[0]))*
-         ppMesonSelection->GetBinContent(ppMesonSelection->FindBin(PtBins[0]));
-   sys+= PbPbMesonSelection->GetBinContent(PbPbMesonSelection->FindBin(PtBins[0]))*
-         PbPbMesonSelection->GetBinContent(PbPbMesonSelection->FindBin(PtBins[0]));
-
-   sys+= ppEffCent->GetBinError(ppEffCent->FindBin(PtBins[0]))/ppEffCent->GetBinContent(ppEffCent->FindBin(PtBins[0]))*100*
-         ppEffCent->GetBinError(ppEffCent->FindBin(PtBins[0]))/ppEffCent->GetBinContent(ppEffCent->FindBin(PtBins[0]))*100;
-   sys+= PbPbEffCent->GetBinError(PbPbEffCent->FindBin(cent))/PbPbEffCent->GetBinContent(PbPbEffCent->FindBin(cent))*100*
-         PbPbEffCent->GetBinError(PbPbEffCent->FindBin(cent))/PbPbEffCent->GetBinContent(PbPbEffCent->FindBin(cent))*100;
-
-   sys+=fPPPtShape->Eval(PtBins[0])*fPPPtShape->Eval(PtBins[0]);
-   sys+=fPbPbPtShape->Eval(PtBins[0])*fPbPbPtShape->Eval(PtBins[0]);
-
-   sys+=(ppTrackingEfficiency)*(ppTrackingEfficiency);
-   sys+=(PbPbTrackingEfficiency)*(PbPbTrackingEfficiency);
-   sys+=ppAlignment*ppAlignment;
-   sys+=ppLifetime*ppLifetime;
-   sys+=PbPbAlignment*PbPbAlignment;
-   sys+=PbPbLifetime*PbPbLifetime;
-
-   sys+= TAAUncertainty->GetBinContent(TAAUncertainty->FindBin(cent))*
-         TAAUncertainty->GetBinContent(TAAUncertainty->FindBin(cent));
-      
-   if (stage==3) return sqrt(sys);
-
-   sys+= ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(PtBins[0]))*
-         ppTagAndProbe->GetBinContent(ppTagAndProbe->FindBin(PtBins[0]));
-
-   sys+= PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(PtBins[0]))*
-         PbPbTagAndProbe->GetBinContent(PbPbTagAndProbe->FindBin(PtBins[0]));
    
    return sqrt(sys);
 }

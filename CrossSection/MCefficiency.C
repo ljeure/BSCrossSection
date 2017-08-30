@@ -20,17 +20,22 @@ Float_t hiBinMin,hiBinMax,centMin,centMax;
 int _nBins = nBins;
 double *_ptBins = ptBins;
 
-void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/revised/ntD_pp_Dzero_kpi_prompt/ntD_EvtBase_20160303_Dfinder_20160302_pp_Pythia8_prompt_D0_dPt0tkPt0p5_pthatweight.root", TString selmcgen="((GisSignal==1||GisSignal==2)&&(Gy>-1&&Gy<1))",TString selmcgenacceptance="((GisSignal==1||GisSignal==2)&&(Gy>-1&&Gy<1))&&abs(Gtk1eta)<2.0&&abs(Gtk2eta)<2.0&&Gtk1pt>2.0&&Gtk2pt>2.0", TString cut_recoonly="Dy>-1.&&Dy<1.&&Dtrk1highPurity&&Dtrk2highPurity&&Dtrk1Pt>2.0&&Dtrk2Pt>2.0&&Dtrk1PtErr/Dtrk1Pt<0.1&&Dtrk2PtErr/Dtrk2Pt<0.1&&abs(Dtrk1Eta)<2.0&&abs(Dtrk2Eta)<2.0&&Dtrk1Algo>3&&Dtrk1Algo<8&&(Dtrk1PixelHit+Dtrk1StripHit)>=11", TString cut="Dy>-1.&&Dy<1.&&Dtrk1highPurity&&Dtrk2highPurity&&Dtrk1Pt>2.0&&Dtrk2Pt>2.0&&(DsvpvDistance/DsvpvDisErr)>3.5&&(DlxyBS/DlxyBSErr)>1.5&&Dchi2cl>0.05&&Dalpha<0.12&&Dtrk1PtErr/Dtrk1Pt<0.1&&Dtrk2PtErr/Dtrk2Pt<0.1&&abs(Dtrk1Eta)<2.0&&abs(Dtrk2Eta)<2.0&&Dtrk1Algo>3&&Dtrk1Algo<8&&Dtrk2Algo>3&&Dtrk2Algo<8&&(Dtrk1PixelHit+Dtrk1StripHit)>=11&&(Dtrk1Chi2ndf/(Dtrk1nStripLayer+Dtrk1nPixelLayer)<0.15)&&(Dtrk2Chi2ndf/(Dtrk2nStripLayer+Dtrk2nPixelLayer)<0.15)",TString label="PP",TString outputfile="test", int useweight=1,Float_t centmin=0., Float_t centmax=100.)
-{ 
-  if(label=="ppInc"){
+void MCefficiency(int isPbPb=0,
+    TString inputmc="/data/wangj/MC2015/Dntuple/pp/revised/ntD_pp_Dzero_kpi_prompt/ntD_EvtBase_20160303_Dfinder_20160302_pp_Pythia8_prompt_D0_dPt0tkPt0p5_pthatweight.root",
+    TString selmcgen="((GisSignal==1||GisSignal==2)&&(Gy>-1&&Gy<1))",
+    TString selmcgenacceptance="((GisSignal==1||GisSignal==2)&&(Gy>-1&&Gy<1))&&abs(Gtk1eta)<2.0&&abs(Gtk2eta)<2.0&&Gtk1pt>2.0&&Gtk2pt>2.0",
+    TString cut_recoonly="Dy>-1.&&Dy<1.&&Dtrk1highPurity&&Dtrk2highPurity&&Dtrk1Pt>2.0&&Dtrk2Pt>2.0&&Dtrk1PtErr/Dtrk1Pt<0.1&&Dtrk2PtErr/Dtrk2Pt<0.1&&abs(Dtrk1Eta)<2.0&&abs(Dtrk2Eta)<2.0&&Dtrk1Algo>3&&Dtrk1Algo<8&&(Dtrk1PixelHit+Dtrk1StripHit)>=11",
+    TString cut="Dy>-1.&&Dy<1.&&Dtrk1highPurity&&Dtrk2highPurity&&Dtrk1Pt>2.0&&Dtrk2Pt>2.0&&(DsvpvDistance/DsvpvDisErr)>3.5&&(DlxyBS/DlxyBSErr)>1.5&&Dchi2cl>0.05&&Dalpha<0.12&&Dtrk1PtErr/Dtrk1Pt<0.1&&Dtrk2PtErr/Dtrk2Pt<0.1&&abs(Dtrk1Eta)<2.0&&abs(Dtrk2Eta)<2.0&&Dtrk1Algo>3&&Dtrk1Algo<8&&Dtrk2Algo>3&&Dtrk2Algo<8&&(Dtrk1PixelHit+Dtrk1StripHit)>=11&&(Dtrk1Chi2ndf/(Dtrk1nStripLayer+Dtrk1nPixelLayer)<0.15)&&(Dtrk2Chi2ndf/(Dtrk2nStripLayer+Dtrk2nPixelLayer)<0.15)",
+    TString label="PP",TString outputfile="test", int useweight=1,
+    Float_t centmin=0., Float_t centmax=100.) { 
+  if(label=="ppInc") {
     _nBins = nBinsInc;
     _ptBins = ptBinsInc;
   }
   
   std::string str = label.Data();
   std::size_t found = str.find("Fine");
-  //if(label=="ppFine"||label=="PbPbFine"){
-  if (found!=std::string::npos){
+  if (found!=std::string::npos) {
     _nBins = nBinsFine;
     _ptBins = ptBinsFine;
   }
@@ -40,20 +45,15 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   centMin = centmin;
   centMax = centmax;
   
-  if(isPbPb==1)
-    {
-      selmcgen = selmcgen+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
-      selmcgenacceptance=selmcgenacceptance+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
-      cut_recoonly=cut_recoonly+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
-      cut=cut+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
-    }
+  if(isPbPb==1) {
+    selmcgen = selmcgen+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
+    selmcgenacceptance=selmcgenacceptance+Form("&&hiBin>=%f&&hiBin<=%f",
+        hiBinMin,hiBinMax);
+    cut_recoonly=cut_recoonly+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
+    cut=cut+Form("&&hiBin>=%f&&hiBin<=%f",hiBinMin,hiBinMax);
+  }
 
-     std::cout<<"selmcgen="<<selmcgen<<std::endl;
-     std::cout<<"selmcgenacceptance="<<selmcgenacceptance<<std::endl;
-     std::cout<<"cut_recoonly"<<cut_recoonly<<std::endl;
-     std::cout<<"cut="<<cut<<std::endl;
-
-   std::cout<<"option="<<useweight<<std::endl;
+  std::cout<<"option="<<useweight<<std::endl;
   gStyle->SetOptTitle(0);
   gStyle->SetOptStat(0);
   gStyle->SetEndErrorSize(0);
@@ -87,7 +87,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
     weightfunctiongen="1";
     weightfunctionreco="1";
     //weighpthat = "pthatweight";
-      weighpthat = "1";
+    weighpthat = "1";
     weightGpt = "(pow(10,-0.094152+0.008102*Gpt+Gpt*Gpt*0.000171+Gpt*Gpt*Gpt*-0.000005+Gpt*Gpt*Gpt*Gpt*-0.000000+Gpt*Gpt*Gpt*Gpt*Gpt*0.000000))";
     weightBgenpt = "(pow(10,-0.094152+0.008102*Bgenpt+Bgenpt*Bgenpt*0.000171+Bgenpt*Bgenpt*Bgenpt*-0.000005+Bgenpt*Bgenpt*Bgenpt*Bgenpt*-0.000000+Bgenpt*Bgenpt*Bgenpt*Bgenpt*Bgenpt*0.000000))";
     }
@@ -100,7 +100,7 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
     weightGpt = "(pow(10,-0.107832+0.010248*Gpt+Gpt*Gpt*0.000079+Gpt*Gpt*Gpt*-0.000003+Gpt*Gpt*Gpt*Gpt*-0.000000+Gpt*Gpt*Gpt*Gpt*Gpt*0.000000))";
     weightBgenpt = "(pow(10,-0.107832+0.010248*Bgenpt+Bgenpt*Bgenpt*0.000079+Bgenpt*Bgenpt*Bgenpt*-0.000003+Bgenpt*Bgenpt*Bgenpt*Bgenpt*-0.000000+Bgenpt*Bgenpt*Bgenpt*Bgenpt*Bgenpt*0.000000))";
     weightHiBin = "(6.08582+hiBin*(-0.155739)+hiBin*hiBin*(0.00149946)+hiBin*hiBin*hiBin*(-6.41629e-06)+hiBin*hiBin*hiBin*hiBin*(1.02726e-08))";
-    }
+  }
 
   std::cout<<"fit function parameters="<<weightfunctiongen<<std::endl;
 
@@ -112,20 +112,24 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   TH1D* hPthat = new TH1D("hPthat","",100,0,500);
   TH1D* hPthatweight = new TH1D("hPthatweight","",100,0,500);
 
-  //ntMC->Project("hPtMC","Bpt",TCut(weightfunctionreco)*(TCut(cut.Data())&&"(Bgen==23333)"));
-  ntMC->Project("hPtMC","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*(TCut(cut.Data())&&"(Bgen==23333)"));
+  ntMC->Project("hPtMC","Bpt",TCut(weighpthat)*TCut(weightBgenpt)
+      *TCut(weightHiBin)*(TCut(cut.Data())&&"(Bgen==23333)"));
   divideBinWidth(hPtMC);
-  //ntMC->Project("hPtMCrecoonly","Bpt",TCut(weightfunctionreco)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
-  ntMC->Project("hPtMCrecoonly","Bpt",TCut(weighpthat)*TCut(weightBgenpt)*TCut(weightHiBin)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
+  
+  ntMC->Project("hPtMCrecoonly","Bpt",TCut(weighpthat)*TCut(weightBgenpt)
+      *TCut(weightHiBin)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
   divideBinWidth(hPtMCrecoonly);
-  //ntGen->Project("hPtGen","Gpt",(TCut(selmcgen.Data())));
-  ntGen->Project("hPtGen","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
+
+  ntGen->Project(
+      "hPtGen","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgen.Data())));
   divideBinWidth(hPtGen);
-  //ntGen->Project("hPtGenAcc","Gpt",(TCut(selmcgenacceptance.Data())));
-  ntGen->Project("hPtGenAcc","Gpt",TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
+  
+  ntGen->Project("hPtGenAcc","Gpt",
+      TCut(weighpthat)*TCut(weightGpt)*(TCut(selmcgenacceptance.Data())));
   divideBinWidth(hPtGenAcc);
-  //ntGen->Project("hPtGenAccWeighted","Gpt",TCut(weightfunctiongen)*(TCut(selmcgenacceptance.Data())));
-  ntGen->Project("hPtGenAccWeighted","Gpt",TCut(weighpthat)*TCut(weightGpt)*TCut(weightHiBin)*(TCut(selmcgenacceptance.Data())));
+  
+  ntGen->Project("hPtGenAccWeighted","Gpt",TCut(weighpthat)*TCut(weightGpt)
+      *TCut(weightHiBin)*(TCut(selmcgenacceptance.Data())));
   divideBinWidth(hPtGenAccWeighted);
 
   ntMC->Project("hPthat","pthat","1");
@@ -134,28 +138,31 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   hPtMC->Sumw2();
   hPtGenAcc->Sumw2();
   hPtMCrecoonly->Sumw2();
+
   //Acceptance
   TH1D* hEffAcc = (TH1D*)hPtGenAcc->Clone("hEffAcc");
   hEffAcc->Sumw2();
   hEffAcc->Divide(hEffAcc,hPtGen,1,1,"b");
+  
   //Selection
   TH1D* hEffSelection = (TH1D*)hPtMC->Clone("hEffSelection");
   hEffSelection->Sumw2();
   hEffSelection->Divide(hEffSelection,hPtGenAccWeighted,1,1,"b");
+  
   //Acc * Eff (one shot)
   TH1D* hEffReco = (TH1D*)hPtMCrecoonly->Clone("hEffReco");
   hEffReco->Sumw2();
   hEffReco->Divide(hEffReco,hPtGen,1,1,"b");
+  
   //Acc * Eff
   TH1D* hEff = (TH1D*)hEffSelection->Clone("hEff");
   hEff->Sumw2();
-  //hEff->Divide(hPtMC,hPtGen,1,1,"");
   hEff->Multiply(hEff,hEffAcc,1,1);
 
-  TH2F* hemptyEff=new TH2F("hemptyEff","",50,_ptBins[0]-5.,_ptBins[_nBins]+5.,10.,0,0.6);  
+  TH2F* hemptyEff =
+    new TH2F("hemptyEff","",50,_ptBins[0]-5.,_ptBins[_nBins]+5.,10.,0,0.6);  
   hemptyEff->GetXaxis()->CenterTitle();
   hemptyEff->GetYaxis()->CenterTitle();
-  //hemptyEff->GetYaxis()->SetTitle("acceptance x #epsilon_{reco} x #epsilon_{sel} ");
   hemptyEff->GetYaxis()->SetTitle("#alpha x #epsilon");
   hemptyEff->GetXaxis()->SetTitle("p_{T} (GeV/c)");
   hemptyEff->GetXaxis()->SetTitleOffset(0.9);
@@ -176,7 +183,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   TH2F* hemptyEffReco=(TH2F*)hemptyEff->Clone("hemptyEffReco");
   TH2F* hemptyEffSelection=(TH2F*)hemptyEff->Clone("hemptyEffSelection");
  
-
   TCanvas*canvasEff=new TCanvas("canvasEff","canvasEff",1000.,500);
   canvasEff->Divide(2,1);
   canvasEff->cd(1);
@@ -206,7 +212,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   hemptyPthat->GetYaxis()->SetLabelSize(0.035);  
   hemptyPthat->SetMaximum(1.0);
   hemptyPthat->SetMinimum(0.);
-
 
   TH2F* hemptySpectra=new TH2F("hemptySpectra","",50,0.,130.,10,1,1e5);  
   hemptySpectra->GetXaxis()->CenterTitle();
@@ -249,23 +254,14 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   gPad->SetLogy();
   hemptySpectra->Draw();
   hPtGen->Draw("same");
-  canvasSpectra->SaveAs(Form("plotEff/canvasSpectra_%s.pdf",Form(label.Data())));
+  canvasSpectra->SaveAs(
+      Form("plotEff/canvasSpectra_%s.pdf",Form(label.Data())));
 
-  //### 1D histogram
-  //hEff = hPtMC / hPtGen
-  //hEffReco = hPtMCrecoonly / hPtGen
-  //hEffAcc = hPtGenAcc / hPtGen
-  //hEffSelection = hPtMC / hPtMCrecoonly
- 
-/*
-  ntMC->Project("hPtMC","Bpt",TCut(weightfunctionreco)*(TCut(cut.Data())&&"(Bgen==23333)"));
-  ntMC->Project("hPtMCrecoonly","Bpt",TCut(weightfunctionreco)*(TCut(cut_recoonly.Data())&&"(Bgen==23333)"));
-  ntGen->Project("hPtGen","Gpt",TCut(weightfunctiongen)*(TCut(selmcgen.Data())));
-  ntGen->Project("hPtGenAcc","Gpt",TCut(weightfunctiongen)*(TCut(selmcgenacceptance.Data())));
-*/  
   TString text;
-  if (isPbPb) { text="350.68 #mub^{-1} (5.02 TeV PbPb)";}
-  else {text="25.8 pb^{-1} (5.02 TeV pp)";}
+  if (isPbPb)
+    text="350.68 #mub^{-1} (5.02 TeV PbPb)";
+  else 
+    text="25.8 pb^{-1} (5.02 TeV pp)";
   TLatex* texlumi = new TLatex(0.9,0.92,text.Data());
   texlumi->SetNDC();
   texlumi->SetTextAlign(31);
@@ -274,7 +270,8 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   texlumi->SetLineWidth(2);
 
   TString texper="%";
-  TLatex* texCent = new TLatex(0.5,0.815,Form("Centrality %.0f - %.0f%s",centMin,centMax,texper.Data()));
+  TLatex* texCent = new TLatex(0.5,0.815,Form("Centrality %.0f - %.0f%s",
+        centMin,centMax,texper.Data()));
   texCent->SetNDC();
   texCent->SetTextFont(42);
   texCent->SetTextSize(0.05);
@@ -294,7 +291,6 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   TCanvas*canvas1D=new TCanvas("canvas1D","",600,600);
   canvas1D->cd();
   gPad->SetLogy(0);
-  //hemptyEff->SetYTitle("hPtMC / hPtGen");
   hemptyEff->SetMaximum(0.6);
   hemptyEff->SetYTitle("#alpha x #epsilon");
   hemptyEff->GetXaxis()->SetTitle("p_{T} GeV^{-1}c)");
@@ -325,7 +321,8 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   hemptySpectra->SetYTitle("Entries of hPtMCrecoonly");
   hemptySpectra->Draw(); 
   hPtMCrecoonly->Draw("same");
-  canvas1D->SaveAs(Form("plotEff/canvas1DhPtMCrecoonly_%s.pdf",Form(label.Data())));
+  canvas1D->SaveAs(Form("plotEff/canvas1DhPtMCrecoonly_%s.pdf",
+        Form(label.Data())));
   canvas1D->Clear();
 
   canvas1D=new TCanvas("canvas1D","",600,600);
@@ -367,9 +364,9 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
   hemptyEff->SetYTitle("hPtMC / hPtGenAcc");
   hemptyEff->Draw(); 
   hEffSelection->Draw("same");
-  canvas1D->SaveAs(Form("plotEff/canvas1DhEffSelection_%s.pdf",Form(label.Data())));
+  canvas1D->SaveAs(Form("plotEff/canvas1DhEffSelection_%s.pdf",
+        Form(label.Data())));
   canvas1D->Clear();
-
 
   gStyle->SetPalette(55);
   TCanvas* canvas2D=new TCanvas("canvas2D","",600,600);
@@ -386,19 +383,15 @@ void MCefficiency(int isPbPb=0,TString inputmc="/data/wangj/MC2015/Dntuple/pp/re
 
 }
 
-int main(int argc, char *argv[])
-{
-  if((argc !=12))
-  {
+int main(int argc, char *argv[]) {
+  if((argc !=12)) {
     std::cout << "Wrong number of inputs" << std::endl;
     return 1;
   }
   
   if(argc == 12)
-    MCefficiency(atoi(argv[1]),argv[2],argv[3],argv[4],argv[5],argv[6],argv[7],argv[8],atoi(argv[9]),atof(argv[10]),atof(argv[11]));
+    MCefficiency(atoi(argv[1]),argv[2],argv[3],argv[4],argv[5],argv[6],argv[7],
+        argv[8],atoi(argv[9]),atof(argv[10]),atof(argv[11]));
+
   return 0;
 }
-
-
-
-
