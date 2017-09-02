@@ -6,15 +6,16 @@ CENTPbPbMIN=0
 CENTPbPbMAX=100
 #Central point of the analysis
 
+# these settings control which macros are run
 DOANALYSISPP_FONLL=0
 DOANALYSISPP_FIT=1
 DOANALYSISPP_MCSTUDY=1
 DOANALYSISPP_CROSS=1
 
-DOANALYSISPbPb_FIT=0
-DOANALYSISPbPb_MCSTUDY=0
-DOANALYSISPbPb_CROSS=0
-DORAA=0
+DOANALYSISPbPb_FIT=1
+DOANALYSISPbPb_MCSTUDY=1
+DOANALYSISPbPb_CROSS=1
+DORAA=1
 
 ## PP MONTE CARLO
 INPUTMCPP="../../bsTMVACDozen/merged-files/MLP_and_BDT_MC.root"
@@ -39,10 +40,6 @@ ISMCPP=0
 ISDOWEIGHTPP=0
 SELGENPP="TMath::Abs(Gy)<2.4&&abs(GpdgId)==521&&GisSignal==1"
 
-#pp GA
-
-#CUTPP="TMath::Abs(By)<2.4&&TMath::Abs(Bmumumass-3.096916)<0.15&&Bmass>5&&Bmass<6&&Btrk1Pt>.687&&Btrk2Pt>.654&&Bchi2cl>.00431&&BsvpvDistance/BsvpvDisErr>3.05&&Bd0/Bd0Err>212&&cos(Bdtheta)>-.232&&Bmu1pt>.88&&Bmu2pt>.589&&Bpt>5.75&&abs(Btktkmass-1.019455)<.0384&&Blxy>-.0106"
-
 # Candan's unoptimized cuts (used in Julia's slides)
 CUTPP="TMath::Abs(By)<2.4&&TMath::Abs(Bmumumass-3.096916)<0.15&&Bmass>5&&Bmass<6&&Btrk1Pt>1.5&&Btrk2Pt>1.5&&Bchi2cl>.0132&&BsvpvDistance/BsvpvDisErr>3.05&&Bd0/Bd0Err>2&&cos(Bdtheta)>.26&&Bmu1pt>1.5&&Bmu2pt>1.5&&Bpt>5.75&&abs(Btktkmass-1.019455)<.0155&&Blxy>.025"
 RECOONLYPP=$CUTPP
@@ -55,6 +52,7 @@ OUTPUTFILEPlotPP="ROOTfiles/CrossSectionPP.root"
 OUTPUTFILEPbPb="ROOTfiles/hPtSpectrumBsPbPb.root"
 
 #SETTING for NP fit
+# this setting for the fit was causing problems. The fit is assumed to be a linear plus a gaussian in the code  as of 9/1/2017
 #NPFIT_PP="3.12764e1*TMath::Gaus(x,5.33166,3.64663e-2)*(x<5.33166)+(x>=5.33166)*3.12764e1*TMath::Gaus(x,5.33166,1.5204e-1)+2.11124e2*TMath::Erf(-(x-5.14397)/6.43194e-2) + 2.11124e2"
 NPFIT_PP="0"
 
@@ -111,7 +109,8 @@ OUTPUTFILEMCSTUDYPbPb="ROOTfiles/MCstudiesPbPb.root"
 OUTPUTFILEPlotPbPb="ROOTfiles/CrossSectionPbPb.root"
 
 #SETTING for NP fit
-NPFIT_PbPb="3.39711e1*TMath::Gaus(x,5.35002e0,3.87952e-2)*(x<5.35002e0)+(x>=5.35002e0)*3.39711e1*TMath::Gaus(x,5.35002e0,1.14232e-1)+2.16376e2*TMath::Erf(-(x-5.14189)/8.66243e-2) + 2.16376e2"
+#NPFIT_PbPb="3.39711e1*TMath::Gaus(x,5.35002e0,3.87952e-2)*(x<5.35002e0)+(x>=5.35002e0)*3.39711e1*TMath::Gaus(x,5.35002e0,1.14232e-1)+2.16376e2*TMath::Erf(-(x-5.14189)/8.66243e-2) + 2.16376e2"
+NPFIT_PbPb="0"
 
 if [ $DOANALYSISPbPb_FIT -eq 1 ]; then      
 g++ fitBs.C $(root-config --cflags --libs) -g -o fitBs.exe 
